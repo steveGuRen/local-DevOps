@@ -31,5 +31,12 @@ docker exec -it saas-rabbitmq bash -c 'rabbitmq-plugins enable rabbitmq_manageme
 
 
 # rabbitmq-plugins enable rabbitmq_delayed_message_exchange  
-
+echo "下载rabbitmq延迟队列插件"
+curl -L -O https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.10.2/rabbitmq_delayed_message_exchange-3.10.2.ez
+echo "复制rabbitmq延迟队列插件到容器"
+docker cp rabbitmq_delayed_message_exchange-3.10.2.ez saas-rabbitmq:/plugins
+docker exec -it saas-rabbitmq bash -c 'ls /plugins/rabbitmq_delayed_message_exchange-3.10.2.ez'
+echo "启动rabbitmq延迟队列插件到容器"
+docker exec -it saas-rabbitmq bash -c 'rabbitmq-plugins enable rabbitmq_delayed_message_exchange'
+ 
 
