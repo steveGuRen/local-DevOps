@@ -4,6 +4,8 @@ echo "删除rabbitmq"
 docker rm -f saas-rabbitmq
 echo "删除redis"
 docker rm -f saas-redis
+echo "删除nacos"
+docker rm -f saas-nacos
 echo "依然存在的容器有："
 docker ps -a |grep saas
 
