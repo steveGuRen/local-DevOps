@@ -41,3 +41,18 @@ docker exec -it saas-rabbitmq bash -c 'rabbitmq-plugins enable rabbitmq_delayed_
 echo "启动延迟队列重启rabbitmq"
 docker restart saas-rabbitmq
 
+
+
+# 安装nacos
+echo "安装nacos，ip 172.10.1.40，对应mysql 172.10.1.20"
+# docker cp saas-nacos:/home/nacos/conf/schema.sql .
+# sed 's/AUTHORIZATION//' schema.sql | sed 's/nacos/IF NOT EXISTS/' > schema.sql
+# docker cp ./schema.sql saas-mysql:/
+echo "下载nacos脚本文件，如果下载不成功则使用本地文件"
+curl -L -O https://github.com/alibaba/nacos/blob/master/config/src/main/resources/META-INF/nacos-db.sql
+echo "导入脚本到saas-mysql"
+docker cp ./nacos-db.sql saas-mysql:/
+docker exec -it saas-mysql bash -c 'mysql -uroot -pabcd1234 -e "CREATE DATABASE nacos CHARACTER SET utf8 COLLATE utf8_general_ci"'
+docker exec -it saas-mysql bash -c 'mysql -uroot -pabcd1234 nacos -e  "source /nacos-db.sql"'
+
+docker run -itd --name saas-nacos --network saas --ip 172.10.1.40 --restart=always -e PREFER_HOST_MODE=ip -e MODE=standalone -e SPRING_DATASOURCE_PLATFORM=mysql -e MYSQL_SERVICE_HOST=172.10.1.20 -e MYSQL_SERVICE_PORT=3306 -e MYSQL_SERVICE_DB_NAME=nacos -e MYSQL_SERVICE_USER=root -e MYSQL_SERVICE_PASSWORD=abcd1234 -p 8848:8848 nacos/nacos-server
