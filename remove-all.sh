@@ -6,6 +6,11 @@ echo "删除redis"
 docker rm -f saas-redis
 echo "删除nacos"
 docker rm -f saas-nacos
+
+echo "删除es"
+docker rm -f saas-elasticsearch
+docker rm -f saas-kibana
+
 echo "依然存在的容器有："
 docker ps -a |grep saas
 

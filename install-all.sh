@@ -56,3 +56,11 @@ docker exec -it saas-mysql bash -c 'mysql -uroot -pabcd1234 -e "CREATE DATABASE 
 docker exec -it saas-mysql bash -c 'mysql -uroot -pabcd1234 nacos -e  "source /nacos-db.sql"'
 
 docker run -itd --name saas-nacos --network saas --ip 172.10.1.40 --restart=always -e PREFER_HOST_MODE=ip -e MODE=standalone -e SPRING_DATASOURCE_PLATFORM=mysql -e MYSQL_SERVICE_HOST=172.10.1.20 -e MYSQL_SERVICE_PORT=3306 -e MYSQL_SERVICE_DB_NAME=nacos -e MYSQL_SERVICE_USER=root -e MYSQL_SERVICE_PASSWORD=abcd1234 -p 8848:8848 nacos/nacos-server
+
+
+# 安装es
+
+echo "安装es，ip 172.10.1.50"
+docker run -d --name saas-elasticsearch --network saas --ip 172.10.1.50 -p 9200:9200 -p 9300:9300  -e "discovery.type=single-node"  elasticsearch:7.5.1
+echo "安装kibana, ip 172.10.1.60，访问地址127.0.0.1:5601"
+docker run -it -d -e ELASTICSEARCH_URL=http://172.10.1.50:9200 --name saas-kibana --network=saas --add-host=elasticsearch:172.10.1.50 -p 5601:5601 kibana:7.5.1
